@@ -9,6 +9,12 @@ DBVAR = f"postgresql://{os.environ['RDS_USERNAME']}:{os.environ['RDS_PASSWORD']}
 application.config['SQLALCHEMY_DATABASE_URI'] = DBVAR 
 application.config['SQLALCHEMY_BINDS'] ={'transport': DBVAR}
 
+db = SQLAlchemy(application)
+bcrypt = Bcrypt(application)
+login_manager= LoginManager(application)
+login_manager.login_view = 'users.login'
+login_manager.login_message_category = 'info'
+
 from capp.home.routes import home
 from capp.methodology.routes import methodology
 from capp.carbon_app.routes import carbon_app
