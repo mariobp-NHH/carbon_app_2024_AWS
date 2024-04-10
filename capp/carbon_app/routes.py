@@ -225,46 +225,6 @@ def your_data():
         order_by(Transport.date.desc()).order_by(Transport.transport.asc()).all()
     
     #Emissions by category
-    emissions_by_transport = db.session.query(db.func.sum(Transport.total), Transport.transport). \
-        filter(Transport.date > (datetime.now() - timedelta(days=5))).filter_by(author=current_user). \
-        group_by(Transport.transport).order_by(Transport.transport.asc()).all()
-    emission_transport = [0, 0, 0, 0, 0, 0, 0, 0]
-    first_tuple_elements = []
-    second_tuple_elements = []
-    for a_tuple in emissions_by_transport:
-        first_tuple_elements.append(a_tuple[0])
-        second_tuple_elements.append(a_tuple[1])
-
-    if 'Bus' in second_tuple_elements:
-        index_bus = second_tuple_elements.index('Bus')
-        emission_transport[1]=first_tuple_elements[index_bus]
-    else:
-        emission_transport[1]
-
-    if 'Car' in second_tuple_elements:
-        index_car = second_tuple_elements.index('Car')
-        emission_transport[2]=first_tuple_elements[index_car]
-    else:
-        emission_transport[2]
-
-    if 'Ferry' in second_tuple_elements:
-        index_ferry = second_tuple_elements.index('Ferry')
-        emission_transport[3]=first_tuple_elements[index_ferry]
-    else:
-        emission_transport[3]
-
-    if 'Motorbike' in second_tuple_elements:
-        index_motorbike = second_tuple_elements.index('Motorbike')
-        emission_transport[4]=first_tuple_elements[index_motorbike]
-    else:
-        emission_transport[4]
-
-    if 'Plane' in second_tuple_elements:
-        index_plane = second_tuple_elements.index('Plane')
-        emission_transport[5]=first_tuple_elements[index_plane]
-    else:
-        emission_transport[5]
-
 
     #Emissions by date (individual)
 
@@ -325,17 +285,7 @@ def your_data():
         index_walk = second_tuple_elements.index('Walk')
         kms_transport[7]=first_tuple_elements[index_walk]
     else:
-        kms_transport[7]  
-
-    #Emissions by date (individual)
-    emissions_by_date = db.session.query(db.func.sum(Transport.total), Transport.date). \
-        filter(Transport.date > (datetime.now() - timedelta(days=5))).filter_by(author=current_user). \
-        group_by(Transport.date).order_by(Transport.date.asc()).all()
-    over_time_emissions = []
-    dates_label = []
-    for total, date in emissions_by_date:
-        dates_label.append(date.strftime("%m-%d-%y"))
-        over_time_emissions.append(total)      
+        kms_transport[7]      
 
     #Kms by date (individual)
     kms_by_date = db.session.query(db.func.sum(Transport.kms), Transport.date). \
@@ -349,11 +299,8 @@ def your_data():
 
 
     return render_template('carbon_app/your_data.html', title='your_data', entries=entries,
-        emissions_by_transport_python_dic=emissions_by_transport,  
-        emissions_by_transport=json.dumps(emission_transport), 
         kms_by_transport=json.dumps(kms_transport),
         over_time_kms=json.dumps(over_time_kms),
-        over_time_emissions=json.dumps(over_time_emissions),
         dates_label=json.dumps(dates_label))
 
 #Delete emission
